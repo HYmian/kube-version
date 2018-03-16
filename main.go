@@ -31,10 +31,6 @@ func main() {
 
 	kubernetesImageTag := kubeadmutil.KubernetesVersionToImageTag(*v)
 	etcdImageTag := constants.DefaultEtcdVersion
-	etcdImageVersion, err := constants.EtcdSupportedVersion(*v)
-	if err == nil {
-		etcdImageTag = etcdImageVersion.String()
-	}
 
 	result := map[string]string{
 		constants.Etcd:                  etcdImageTag,
@@ -49,8 +45,8 @@ func main() {
 		return
 	}
 
-	result[constants.KubeDNS] = dns.GetDNSVersion(k8sVersion, constants.KubeDNS)
-	result[constants.CoreDNS] = dns.GetDNSVersion(k8sVersion, constants.CoreDNS)
+	result["kube-dns"] = dns.GetKubeDNSVersion(k8sVersion)
+	result["kube-proxy"] = kubernetesImageTag
 
 	bs, err := json.MarshalIndent(result, "", "  ")
 	if err != nil {
