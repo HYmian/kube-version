@@ -10,6 +10,7 @@ before_install:
 
 script:
 - git submodule init
+- git submodule update
 - docker run -v $(pwd):/go/src/github.com/HYmian/kube-version -w /go/src/github.com/HYmian/kube-version golang:alpine go build
 - docker build -t ymian/kube-version:lastest .
 - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
