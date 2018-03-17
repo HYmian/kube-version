@@ -1,9 +1,8 @@
 package main
 
 import (
-	"encoding/json"
-	"flag"
 	"fmt"
+	"os"
 
 	"k8s.io/kubernetes/cmd/kubeadm/app/constants"
 	"k8s.io/kubernetes/cmd/kubeadm/app/phases/addons/dns"
@@ -12,24 +11,12 @@ import (
 )
 
 var (
-	components = []string{
-		"etcd",
-		"kube-apiserver",
-		"kube-controller-manager",
-		"kube-scheduler",
-	}
-
-	addonDNS = []string{
-		"kube-dns",
-		"coredns",
-	}
+	kubernetesVesion    = os.Getenv("KUBERNETES_VERSION")
+	kubernetesComponent = os.Getenv("KUBERNETES_COMPONENT")
 )
 
 func main() {
-	v := flag.String("k8s-version", "", "kubernetes version")
-	flag.Parse()
-
-	kubernetesImageTag := kubeadmutil.KubernetesVersionToImageTag(*v)
+	kubernetesImageTag := kubeadmutil.KubernetesVersionToImageTag(kubernetesVesion)
 	etcdImageTag := constants.DefaultEtcdVersion
 
 	result := map[string]string{
@@ -39,19 +26,14 @@ func main() {
 		constants.KubeScheduler:         kubernetesImageTag,
 	}
 
-	k8sVersion, err := version.ParseSemantic(*v)
+	k8sVersion, err := version.ParseSemantic(kubernetesVesion)
 	if err != nil {
-		fmt.Println(err)
+		println(err)
 		return
 	}
 
 	result["kube-dns"] = dns.GetKubeDNSVersion(k8sVersion)
 	result["kube-proxy"] = kubernetesImageTag
 
-	bs, err := json.MarshalIndent(result, "", "  ")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(bs))
+	fmt.Println(result[kubernetesComponent])
 }
