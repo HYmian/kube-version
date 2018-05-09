@@ -32,7 +32,8 @@ func main() {
 		return
 	}
 
-	result["kube-dns"] = dns.GetKubeDNSVersion(k8sVersion)
+	result["kube-dns"] = dns.GetDNSVersion(k8sVersion, "kube-dns")
+	result["coredns"] = dns.GetDNSVersion(k8sVersion, "coredns")
 	result["kube-proxy"] = kubernetesImageTag
 
 	fmt.Print(result[kubernetesComponent])
