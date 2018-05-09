@@ -1,4 +1,4 @@
 [submodule "kubernetes"]
 	path = vendor/k8s.io/kubernetes
 	url = https://github.com/kubernetes/kubernetes
-	branch = release-1.10
+	branch = release-1.9
