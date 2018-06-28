@@ -5,9 +5,7 @@ import (
 	"os"
 
 	"k8s.io/kubernetes/cmd/kubeadm/app/constants"
-	"k8s.io/kubernetes/cmd/kubeadm/app/phases/addons/dns"
 	kubeadmutil "k8s.io/kubernetes/cmd/kubeadm/app/util"
-	"k8s.io/kubernetes/pkg/util/version"
 )
 
 var (
@@ -26,14 +24,9 @@ func main() {
 		constants.KubeScheduler:         kubernetesImageTag,
 	}
 
-	k8sVersion, err := version.ParseSemantic(kubernetesVesion)
-	if err != nil {
-		println(err)
-		return
-	}
-
-	result["kube-dns"] = dns.GetKubeDNSVersion(k8sVersion)
-	result["kube-proxy"] = kubernetesImageTag
+	result[constants.KubeDNS] = constants.KubeDNSVersion
+	result[constants.CoreDNS] = constants.CoreDNSVersion
+	result[constants.KubeProxy] = kubernetesImageTag
 
 	fmt.Print(result[kubernetesComponent])
 }
